@@ -1,0 +1,45 @@
+- Official docker registry and how to pull images
+- Now we share images with selected people - through send files or through docker registry server
+
+Private Docker Registries servers
+
+- The Docker organization maintains the official Docker images registry.
+- Other Docker registries work same way BUT are under the control of another person or group
+- Hence, no guarantees that the images will work or are safe to use.
+- Non official Docker organization jave URL of the private Docker registry they came from
+  eg: dockerhub.myprivateregistry.com/classify_spam
+
+- Use docker pull to pull from private registry as well
+
+        docker pull <private-registry-url>/<image-name>
+        docker pull dockerhub.myprivateregistry.com/classify_spam:v1
+
+- Push image to a registry
+
+        docker image push <image-name>
+
+- Push to specific registry. In order to do so, we need to have the image start with the registry url. Hence we need to
+  rename the image:
+
+        docker tag <old-name><new-name>
+        docker tag classify_spam:v1 dockerhub.myprivateregistry.com/classify_spam:v1
+
+  docker tag to rename.
+  After renaming, then we push it to private registry
+
+        docker image push dockerhub.myprivateregistry.com/classify_spam:v1
+
+- Docker official images no need authentication. But private Docker Repository, owner can configure
+- The standard way to secure private Docker registries requires users to log in
+- Login command:
+
+        docker login dockerhub.myprivateregistry.com
+
+- Sending Docker images as files
+
+        docker save -o <file-name> <image-name>
+        docker save -o image.tar classify_spam:v1
+
+- Load an image from file
+
+        docker load -i <file-name>

@@ -1,0 +1,60 @@
+- The RUN instruction allow us to execute bash commands to create an image but can't use it to move files from local files sytem onto the image we are building
+- use COPY instruction
+
+1. COPY instruction
+
+- 2 parameters
+
+  - 1st parameter: path of file we want to copy
+  - 2nd parameter: destination path inside the image
+
+    COPY <src-path-on-host> <dest-path-on-image>
+
+- If destination path does not have a filename, the original filename will be used
+
+  COPY /projects/pipeline_v3/pipeline.py /app/
+
+- If source path filename is not specified, then whole folder will be copied including sub-folders
+
+  COPY /projects/pipeline_v3/ /app/
+
+  - Whole pipeline_v3 folder will be copied
+
+- Cannot copy files from parent directory
+
+  /init.py
+  /projects/
+  Dockerfile
+  pipeline_v3/
+  pipeline.py
+
+  - Cannot copy init.py into an image
+
+2. Downloading image files instead of copying from local directory
+
+- Best practice is to run several RUN instruction and bash commands to download, unzip and clean files
+
+  - Download a file
+    RUN curl <file-url> -o <destination>
+  - Unzip the file
+    RUN unzip <dest-folder>/<filename>.zip
+  - Remove the original zip file
+    RUN rm <copy_directory>/<filename>.zip
+
+3. Chaining commands
+
+- Any instruction in a Dockerfile to download files will add to the size of the image, even if add to the size of the image
+- To ensure images don't become big, we will chain commands which include cleaning to make it efficient
+
+  RUN curl <file_download_url> -o <destination_directory>/<filename>.zip \
+  && unzip <destionation_directory>/<filename>.zip -d <unzipped-directory> \
+  && rm <destination_directory>/<filename>.zip
+
+  - Backslash \ : bash commands can span across multiple lines
+  - double ampersand && : tells shell to execute commands one after the other
+  - Whole code = single command
+
+- This chaining commands include downloading and unpacking archives, ensuring image is small and easy to share and faster to run
+
+4. Summary
+   ![alt text](image14.png)

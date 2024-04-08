@@ -1,0 +1,31 @@
+- Different Docker container with different purposes may have different start commands
+- For example, a Hello World container has a write string start command
+- For a python script, it makes more sense for image to start a python session for user automatically and exist the session once that python session is stopped
+
+1. Using CMD instruction
+
+   CMD <shell-command>
+
+   - Single parameter: shell command
+
+- Runs when the image is started NOT executed when using docker build
+- Adding CMD instruction does not increase image size and lead time to build
+- If multiple CMD instruction exist, only last one will have any effect
+- The more general the use case of the image, the more flexible the start command should be.
+  - For example, if we make a general usage Ubuntu image, simply opening a shell would make sense as a start command. The image will then exit when the user exits the shell.
+
+![alt text](image-7.png)
+
+- There is a default start command for image but this can be overriden
+- To override, just include the additional shell command when starting the imamge
+
+  - Start an image
+    docker run <image>
+
+  - Include shell command. This will override the default CMD command
+    docker run <image> <shell-command>
+
+  - Start image interactively with a custom start command
+    docker run -it <image> <shell-command>
+    docker run -it ubuntu bash
+    - using a shell as a new start command, for example, bash, allow us to look around the image, discover files and see what is installed

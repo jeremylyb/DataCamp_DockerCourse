@@ -1,0 +1,61 @@
+![alt text](image.png)
+
+1. Docker Files
+   Docker images are the recipes or blueprints for Docker containers. To create this blueprint, we must write down a list of instructions in what is called a Dockerfile.
+
+2. Dockerfile
+   A Dockerfile is a text file containing all the commands we would run in the command line to install the software we need, with the addition of some Docker-specific syntax. Conveniently this file should be called Dockerfile for Docker to be able to find it.
+
+- First line of Dockerfile always starts with "FROM"
+
+  FROM ubuntu
+  ![alt text](image-2.png)
+
+  - It indicates to Docker which image to start from
+  - We can define the version as well
+
+- After "FROM" we build.
+
+  docker build /location/to/Dockerfile
+  ![alt text](image-3.png)
+
+  - build follow by location path
+  - period = current folder
+  - The output ends with the hash256 code for unique identifier
+  - If want to give more reconizable name, use t flag followed by name
+
+    docker build -t first_image:v0 .
+    ![alt text](image-5.png)
+
+  - likewise, we need define the location path, with defined or current folder(".")
+
+- Once Docker successfully build out image from Dockerfile, we can run and use the image similar to how we download one from Dockerhub
+
+3. Customizing Images
+
+- To customize our Dockerfile, we use RUN instruction
+- RUN instruction allows us to run any valid shell command while building an image
+- Example: to make an image that runs a python data analysis, we start from the ubuntu image, which has Ubuntu installed.
+
+  FROM ubuntu
+  RUN apt-get update
+  RUN apt-get install -y python3
+  ![alt text](image-4.png)
+
+- Apt-get is a package manager which enables us to insntall all kinds of software
+- The apt-get update commnad added to Dockerfile will update apt-get so it knows what the most update to date version is of all
+  software we are installing
+- Using another RUN apt-get instruction allow us to download that updated version of software
+
+4. Summary
+
+   ![alt text](image-6.png)
+
+- Typically we would create a Dockerfile file first (make sure named as Dockerfile so Docker will read) and then include these instructions in
+
+  nano Dockerfile
+
+- Then include above codes in the nano Dockerfile
+- Then build
+- Alternatively, we can direclty echo instructions into a file:
+  echo "COPY ./pipeline_v3/ /app/" >> Dockerfile

@@ -1,0 +1,43 @@
+1. Docker Engine
+
+   - Open source tools that allow us to create, run and manage containers
+   - Other Container Eco-system: Docker Compose - Tool for defining and running multi-container Docker applications, Kubernetes - a system for container scheduling and management
+   - Docker Engine: 2 parts.
+     1. Server
+        - Background process that requires no user interaction - Daemon ~ Docker server
+     2. Client
+        - A command line interface to talke to server
+     3. API specification
+        - An interaction between Docker Client and Docker Server, specify how other applications can work with the daemon
+          ![alt text](image-1.png)
+
+2. Docker Daemon
+
+   - Responsible for managing all Docker objects, eg Images, Containers, and more
+   - Cannot interact directly with daemon, need a client to give a human usable interface to it
+   - CLI command line interface is a default option
+   - Docker Destop : GUI option
+
+3. Image and Containers
+
+   - Image:
+     - Blueprint or recipe, including everyitng - idle copy of a hard drive, software we want to run
+   - Container:
+     - A running image, copy of image
+       ![alt text](image-2.png)
+
+4. Containers
+
+   - Containers are like processses
+   - Eg similar to a spotify process, Text editor process, email outlook process etc.
+   - What makes a container process different is resource permissioning.
+     - Resources of a container process is access restricted, but also undetechable to the process
+     - For example, instead of seeing all files in hard drive, the process is only given access to a single folder and cannot see files outside of that folder
+     - Not only block resource but hide resource. This allows running a process that is isolated from the rest of the machine
+     - This let a separate operating system run inside the process.
+     - A container runs its own operating system instead of using the host operating system.
+   - The Docker daemon ensures that the OS running in the container is unaware of other containers and the host OS
+   - The OS inside the container can start and manage its own processes without interfering with any processes running on the host OS
+     ![alt text](image-3.png)
+
+   ![alt text](image-4.png)

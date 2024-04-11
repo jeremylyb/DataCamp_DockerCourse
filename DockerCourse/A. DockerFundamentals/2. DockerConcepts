@@ -1,0 +1,32 @@
+1. Docker Containers
+
+   - A portable computing environment
+   - It contains everything needed to run a workflow or application, including dependencies, code, and configuration.
+   - Container (Image) : like a new computer which we need to copy our code/workflow and install all needed dependencies to it
+   - Once everything is installed and configured, we can make backups (Container) of that computer
+   - We can then make this backup on another computer.
+   - This backup - packaging of code together with its dependencies (including the operating system) and configuration
+
+2. Benefits of Container
+
+   - Reproducibility : same input same output everything
+   - Portability: run the same on whichever device, norisk of removed dependencies, lost configuration files or other changes that break our application
+   - Isolation between container and and rest of environment
+     - Running a container will have no impact outside of the container.
+     - Containers are isolated from each other. NO INTERACTION WITH OTHER CONTAINERS.
+     - Anything happening outside the container will not affect the result of a container
+     - If the security of one container is compromised, other containers and host iteslf remain secure since no communication between containers
+   - Limited resources access to host device operating system
+   - Lightweight
+     - In comparison to running application outside of a container, uses less resources
+     - In comparison to virtual machine, which also provide isolation, lesser overhead
+
+3. Benefits of containers make them relevant for data science
+
+   - Make any task or workflow automatically repoducible everywhere
+   - Avoid issues when sharing works
+   - Automatically include dependencies, including dataset
+   - Reusable across devices.
+   - Sharable
+
+   ![alt text](image.png)

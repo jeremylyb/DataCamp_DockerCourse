@@ -4,7 +4,8 @@
    Docker images are the recipes or blueprints for Docker containers. To create this blueprint, we must write down a list of instructions in what is called a Dockerfile.
 
 2. Dockerfile
-   A Dockerfile is a text file containing all the commands we would run in the command line to install the software we need, with the addition of some Docker-specific syntax. Conveniently this file should be called Dockerfile for Docker to be able to find it.
+   A Dockerfile is a text file containing all the commands we would run in the command line to install the software we need, with the addition of some Docker-specific syntax. 
+   Conveniently this file should be called Dockerfile for Docker to be able to find it.
 
 - First line of Dockerfile always starts with "FROM"
 

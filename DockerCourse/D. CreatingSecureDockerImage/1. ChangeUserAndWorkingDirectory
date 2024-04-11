@@ -1,0 +1,97 @@
+1. WORKDIR
+
+- Docker instructions : FROM RUN and COPY instructions onlly affect the file system, not each other.
+- For example:
+
+  ![alt text](image.png)
+  COPY /projects/pipeline_v3/start.sh /app/start.sh
+  RUN /app/start.sh
+
+  - If we copy a start.sh file from local file system into an image, we can use RUN instruction to execute this file
+  - The two instructions didnt change each other's behaviour directly but both used and changed the file system
+
+- Some other instructions can influence other instructions directly
+
+  - WORKDIR: Changes the working directory for all following subsequent instructions
+  - For example:
+
+    - Using WORKDIR to change the working directory
+    - Starting all paths at the root of the file system becomes cluttered when working with long paths:
+
+      Orig:
+      COPY /projects/pipeline_v3/ /home/my_user_with_a_long_name/work/projects/app/
+
+    - We can use WORKDIR to change the directory inside the image from which all subsequent instructions will be executed
+    - Thereafter for COPY instruction, we will just change the current path on which relative paths will be based
+
+      With WORKDIR:
+      WORKDIR /home/my_user_with_a_long_name/work/projects/
+      COPY /projects/pipeline_v3/ app/
+
+    - Like COPY instruction, other Dockerfile instructions like CMD, RUN instructions are influenced when working directory is changed with WORKDIR
+
+      RUN example:
+      Orig:
+      RUN /home/repl/projects/pipeline/init.sh
+      RUN /home/repl/projects/pipeline/start.sh
+
+      With WORKDIR:
+      WORKDIR /home/repl/projects/pipeline/
+      RUN ./init.sh
+      RUN ./start.sh
+
+    - The shell commands executed by the RUN instruction will be run in the directory set by WORKDIR
+    - This allow us to make RUN instruction more readable, removes confusion about where files we are running are located
+
+      CMD example:
+      Orig:
+      CMD /home/repl/projects/pipeline/start.sh
+
+      With WORKDIR:
+      WORKDIR /home/repl/projects/pipeline/
+      CMD start.sh
+
+    - Overriding command will also be run in WORKDIR:
+
+            docker run -it pipeline_image start.sh
+
+2.  LINUX Permissions and best practices
+
+    - What you can do in a Linux operating system or OS depends on your permissions.
+    - Each users are assigned with and may have differing permissions
+    - For example, a data science user could be allowed to access the datasets folder while other users are not.
+    - Root is a special user with all permissions
+    - Best practice:
+      - Use root user to create new users with permissions for specific tasks
+      - Thereafter, stop using root user and use these better scoped users created by root instead
+      - DO NOT RUN EVERYTHING AS ROOT
+
+3.  Changing the user in an image
+
+    - When writing Dockerfiles, follow best practice
+    - Image we start our Dockerfile from will determine the user
+    - Example:
+
+      - Ubuntu image uses root user by default
+      - Any URN instructions we put in a Dockerfile starting from ubuntu will run as root
+
+        FROM ubuntu --> Root user by default
+        RUN apt-get update --> Run as root
+
+      - Since this is run as root, this has access to all folders, will not get errors about permission when installing anything
+      - However, it is unsafe as all instruction will run with full permissions
+
+4.  USER docker instruction
+
+    - User Dockerfile instruction allow us to change the user in the image in which the followings instructions are run
+    - Any following instruction will be run as the user set by the USER instruction
+    - It can be ran multiple times and the latest instruction will determine the user
+    - The last USER instruction in a Dockerfile will also control the user in any containers started from the image of this Dockerfile
+
+            FROM ubuntu                 --> Root user by default
+            USER repl                   --> Changes the user to repl
+            RUN apt-get update          --> Run as repl
+
+5.  Summary
+
+    ![alt text](image-1.png)

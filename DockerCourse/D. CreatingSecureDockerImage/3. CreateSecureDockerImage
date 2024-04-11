@@ -1,0 +1,49 @@
+1. Inherent security in Docker
+
+- Docker inherently provides more security over running applications locally because there is an extra layer of isolation between the application and our operating system
+- This makes it safer to open an application of archives from an unknown source in a container in comparison to doing the same on local machine
+- Still it is still not 100% safe
+- A malicious payload can escape the container's isolation and infect the host
+
+2. Make secure images
+
+- Main risk of docker:
+  - Attackers can break out of a container to attack the host operating system
+- Container providers spend extensive resources on making their containers as secure as possible
+- Additional security and safety measures USERS can do to mitigate risk
+- For example:
+  To run a database or a pipeline in a production environment - The safety meaures below wont do much if we are just sharing images with colleagues or using them to run workload locally - However, a widespread use case for images is running them on remote machines and allowing external access.
+
+      Step 1: Choosing the right image to start from
+        - Using images from an untrusted source is a security risk
+        - Docker Hub Registry provide filtering of Trusted Content in 3 different ways
+        - These filter will give us images we consider safe for most use-cases
+
+      Step 2: Make sure versioning of Image from Official Docker Hub Repository are up to date
+        - Even extremely popular images may not incorporate latest up to date release
+        - Hence, best practice is to update the software to its latest version in images ourselves
+
+      Step 3 : keep images minimal
+        - Ensure only install softawre that you need for its current use case
+        - This means lesser software to keep up to date
+
+      Step 4 : Don't run applications as root
+        - Do not leave the user in our images as root.
+        - We will typically need to install and ocnfigure applications as root.
+        - BUT thereafter, the user in our image should be change to a user with fewer permission.
+        - For example,
+            if we change the USER before the CMD instruction that starts our pipelien, we ensure that any malicious code in the
+              pipeline does not have root access in our container.
+
+            FROM ubuntu                           --> User is set to root by default
+            RUN apt-get update
+            RUN apt-get install python3
+            USER repl                             --> We switch the user after installing what we need for our use-case
+            CMD python3 pipeline.py
+            ![alt text](image-3.png)
+
+3. SUmmary
+
+- Using a container is a good way to run an executable or open an archive from an untrusted source because you greatly decrease the chance of a malicious actor accessing your computer.
+- There is no safer application than one we haven't installed.
+- When creating an image ourselves, we can increase the security by changing the Linux user to something other than the root user.

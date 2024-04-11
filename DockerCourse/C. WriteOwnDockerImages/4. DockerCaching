@@ -1,0 +1,36 @@
+- When RUN instructions are executed in the Dockerfile lines, it takes long time because shell commands are actually running when the image is built
+- This is necessary because what is saved in the resulting image is not the instrucitons in the Dockerfile but it is actually the changes to the file system the instructions make during the build
+  - For example, if we have a RUN instruction with a shell command that downloads and opens a zip file with several files inside, the resulting image will contain those files.
+    ![alt text](image-8.png)
+
+1. Docker instructions are linked to File system changes
+
+- Each instruction in the Dokcerfile is linked to the changes it made in the image file system
+- During the build, an image keeps track of which instructions in the Dockerfile created which change to the file system.
+- We can view an image as a list of consecutive changes to the file system, with every entry in the list corresponding to a specific Docker instruction in the Dockerfile.
+- Example:
+  ![alt text](image-9.png)
+- Together all the changes to the filesystem for a single instruction in the Dockerfile are called a layer of the image. All layers together make up a Docker image.
+- While building a Dockerfile, it will print which step it is building out of the total amount of steps whenever the next instruction in the Dockerfile starts building.
+  ![alt text](image-10.png)
+
+2. Docker Caching
+
+- When building a Dockerfile that we have built before, in front of each layer being built, it says cached in capital letters.
+- Docker detects which Dockerfile instructions have not changed, and instead of re-running the Dockerfile instruction, it uses the known result it has stored.
+- Docker will only use cached layers to speed up our builds if the Dockerfile instruction is exactly the same and all previous Dockerfile instructions are also identical to when it originally created and stored this layer.
+  ![alt text](image-11.png)
+
+2. Understanding why Docker caching is important
+
+- 2 reasons
+  - 1. It will help us understand why sometimes our image stays the same even though we change and rebuild it
+    - For example:
+      Docker can't know when a new version of python3 is released
+      - When we have RUN 'apt-get update' and 'apt-get install python3' instruction in our Dockerfile, and a new version of python3 is released. Rebuilding our Dockerfile will not change anything in the resulting image. WHY?
+      - Docker will use cached layers and see the same instructions as when it last built this Dockerfile and will assume that the result is the same.
+        ![alt text](image-12.png)
+  - 2. It help us understand when Docker layers are cached is also important because it will help us write Dockerfiles, which we can make changes to without all layers having to be rebuilt
+    - This can be done by ordering the instructions in the Dockerfile from least changing to most changing.
+    - For example, putting install packages before copy files. This ensures as many cached layers as possible can be re-used.
+      ![alt text](image-13.png)

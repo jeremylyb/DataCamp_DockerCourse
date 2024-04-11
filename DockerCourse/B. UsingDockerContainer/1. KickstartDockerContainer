@@ -1,0 +1,62 @@
+1. Pre-requisite Shell Commands
+   ![alt text](image.png)
+
+2. Run Docker container
+
+   - CLI
+     - Docker CLI sends isntructions to docker daemon: which is responsible for managing our containers and images
+     - After daemon receives our commnad, it will reply with the result which we will see in the terminal
+     - Every command starts with docker
+   - Start Container from an Image (blueprint)
+     - After starting a container from an image, we can then interact with it
+       ![alt text](image-1.png)
+
+3. Commands
+
+   - run container
+
+     docker run <image-name>
+     docker run hello-world
+
+     output:
+     ![alt text](image-2.png)
+
+     docker run ubuntu
+
+     output:
+     ![alt text](image-3.png)
+
+     - No printed message like hello-world. Open and closes immediately. Because creaters find it makes no sense to print messages
+
+   - Running docker interactively with -it flag
+
+     docker run -it <image-name>
+     docker run -it ubuntu
+
+     - this will start container and also will simultaneously start a interactive shell in this container
+     - It will give us access to a clean Ubuntu environment isolated from our host machine because it is running inside the container
+       ![alt text](image-4.png)
+     - exit a container
+       ![alt text](image-5.png)
+     - This will return us to the host machine and stop the container
+
+   - Running a container detached with -d flag
+
+     docker run -d <image-name>
+     docker run -d postgres
+
+     - adding -d will run the container in background, giving us back control of the shell
+       ![alt text](image-6.png)
+
+   - See all containers
+
+     docker ps
+     ![alt text](image-8.png)
+
+   - Stop specific container
+
+     docker <container-id>
+     ![alt text](image-7.png)
+
+   - Summary
+     ![alt text](image-9.png)

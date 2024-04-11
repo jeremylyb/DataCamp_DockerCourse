@@ -1,0 +1,77 @@
+- Using variables in Dockerilfes allows us to make them less verbose, safer to change, and easier to update
+
+1.  Variables with the ARG instruction
+
+    - ARG instruction allows us to set variables inside a Dockerfile and then use that variable throughout the Dockerfile
+
+      ARG <var_name>=<var_value>
+      ARG path=/home/repl
+
+    - In later commands, we can then reference this variable using a dollar sign followed by variable name
+    - NOTE: It can only be used in Dockerfile, not accessible after the image is built
+    - In other words, if you define a variable with ARG in a Dockerfile, build an image from that Dockerfile, and then start a container from that image, that variable will not exist inside the container.
+    - It is possible to override variables set with ARG during the build, allowing us to configure images at build time
+    - Typical use cases:
+      a. Versioning - Setting python version
+
+            FROM ubuntu
+            ARG python_version=3.9.7-1+bionic1
+            RUN apt-get install python3=$python_version
+            RUN apt-get install python3-dev=$python_version
+
+      b. Configuring a folder
+
+            FROM ubuntu
+            ARG project_folder=/projects/pipeline_v3
+            COPY /local/project/files $project_folder
+            COPY /local/project/test_files $project_folder/tests
+
+      c. Set in docker build command: --build-arg flag
+
+            docker build --build-arg project_folder=/repl/pipeline .
+
+      - This set another value for the project-folder variable which overrides the original value during that build
+
+2.  Alternative way to define variable - Variables with ENV
+
+            ENV <var_name>=<var_value>
+
+            ENV DB_USER=pipeline_user
+
+        - To use in the Dockerfile or at runtime (this is the difference compared to ARG)
+
+            $DB_USER
+
+            CMD psql -U $DB_USER
+
+    - Syntax is identical to the ARG instruction BUT variables set with ENV are accessible after the image is built
+    - Variables set with ARG: to change behaviour of Dockerfiles during the build
+    - Variables set with ENV: to change behaviour at runtime
+    - Variables set using ENV can be used in containers starting form your image, making it a goodway to set configuration using a runtime
+    - Every user starting a container from our image can select a different value for any ENV variables we set in our image.
+    - TYpical use cases:
+      a. Application settings ie like database directors or users
+
+            ENV DATA_DIR=/usr/local/var/postgres
+            ENV MODE production
+
+            - NOTE: Unlike ARG variables, it is not possible to override ENV variables at build time
+            - It is possible to override ENV variables when starting a container from an image
+
+                docker run --env <key>=<value> <image-name>
+                docker run --env POSTGRES_USER=test_db --env POSTGRES_PASSWORD=test_db postgres
+
+                - For example for the official postgres image, there are several ENV variables available to configure the container
+
+3.  Variables are not secure
+
+    - Both ENV and ARG variables are convenient for adding passwords or other secrets to a docker image at build or runtime
+    - BUT NOT SECURE
+    - Using history command, it will show all steps that were done to build an image
+    - If we pass variables at build or start time, they can be found in the bash history of the host or image
+    - Bash History = List of all shell commands executed by a user.
+    - NOTE: Without using techniques to hide confidential information to create our image, they can be compromised.
+
+4.  Summary
+
+![alt text](image-2.png)
